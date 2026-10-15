@@ -1,0 +1,16 @@
+node_modules/
+.npm-cache/
+dist/
+*.tsbuildinfo
+*.local
+*.log
+.DS_Store
+.data/
+.test-data/
+.env
+.env.*
+!.env.example
+preview/
+# Local research captures and one-off editing scripts; retain photo attribution.
+content/*
+!content/photo-manifest.json
