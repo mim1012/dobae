@@ -14,14 +14,14 @@ const previewPhotos: Record<string, number[]> = {
   'yeomchang-32': [19, 23],
 };
 
-export function ProjectCard({ project, delay = 0 }: { project: Project; delay?: number }) {
+export function ProjectCard({ project, delay = 0, inCarousel = false }: { project: Project; delay?: number; inCarousel?: boolean }) {
   const [selected, setSelected] = useState(0);
   const cover = project.gallery.find(photo => photo.src === project.cover) ?? project.gallery[0];
   const previewSources = previewPhotos[project.id]?.map(index => projectPhoto(project.id, index));
   const otherPhotos = project.gallery.filter(photo => photo.src !== cover.src && (previewSources ? previewSources.includes(photo.src) : photo.stage === cover.stage));
   const photos = [cover, ...otherPhotos.slice(0, 2)];
   const photo = photos[selected];
-  return <Reveal as="article" className="project-card" aria-label={project.title} delay={delay}>
+  return <Reveal as="article" className="project-card" aria-label={project.title} delay={delay} lift={inCarousel ? 0 : 26}>
     <a className="project-photo" href={`/portfolio/${project.id}`} aria-label={`${project.title} 시공사례 자세히 보기`}>
       <Photo src={photo.src} label={photo.alt} />
       <span className="project-photo-tag">{project.region.replace('서울 ', '').replace('경기 ', '')} · {project.area}평</span>
@@ -94,7 +94,7 @@ export function ProjectCarousel() {
         onKeyDown={event => {
         if (event.target !== event.currentTarget) return;
         if (event.key === 'ArrowRight' || event.key === 'ArrowLeft') { event.preventDefault(); move(event.key === 'ArrowRight' ? 1 : -1); }
-      }}>{homeProjects.map((project, index) => <ProjectCard key={project.id} project={project} delay={(index % 3) * .09} />)}</div>
+      }}>{homeProjects.map((project, index) => <ProjectCard key={project.id} project={project} delay={(index % 3) * .09} inCarousel />)}</div>
     </div>
   </section>;
 }

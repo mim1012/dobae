@@ -987,5 +987,123 @@ h1, h2, h3 { text-wrap: pretty; }
   .guide-finder-banner { padding: 25px; }
 }
 
+/* Size content for the available height as well as the width of the window. */
+:root {
+  --section-space: clamp(28px, 4.5svh, 56px);
+  --photo-height: clamp(200px, 40svh, 400px);
+  --project-photo-height: clamp(190px, calc(100svh - 390px), 480px);
+}
+.section { padding-block: var(--section-space); }
+.home-hero { height: clamp(230px, min(35.42vw, 100svh - 210px), 520px); }
+.page-intro { padding-block: clamp(22px, 3.5svh, 38px); }
+.page-intro h1, .guide-header h1, .article-header h1, .project-detail-intro h1 { font-size: clamp(28px, 4.5svh, 40px); }
+.page-intro p { margin-top: 8px; }
+.page-eyebrow { margin-bottom: 8px; }
+.section-heading { margin-bottom: 24px; }
+.section-heading h2, .home-process .section-heading h2, .home-about .section-heading h2,
+.home-guide .section-heading h2, .home-consult-copy h2, .project-section-header h2 { font-size: clamp(27px, 4.5svh, 36px); }
+.home-portfolio { padding-block: 24px; }
+.project-section-header { margin-bottom: 20px; }
+.project-section-header p { margin-top: 6px; }
+.project-carousel { overflow-y: hidden; align-items: flex-start; padding-block: 2px 6px; }
+.project-photo .photo-space { height: var(--project-photo-height); aspect-ratio: auto; }
+.project-photo .photo-space img { object-position: center 55%; }
+.project-thumbnails { padding-top: 10px; gap: 10px; }
+.project-thumbnails button { width: 56px; height: 56px; }
+.project-card-copy { margin-top: 10px; }
+.project-card-copy h3 { font-size: 17px; }
+.project-card-copy p { font-size: 14px; margin-top: 3px; }
+.project-card-copy .project-scope { font-size: 13px; }
+.home-process .section-title-row, .wallpaper-heading { margin-bottom: 20px; }
+.process-preview .photo-space, .texture-card>.photo-space { height: var(--photo-height); aspect-ratio: auto; }
+.texture-card-info { padding-block: 14px; }
+.texture-card-info>.texture-photo { width: 52px; height: 52px; }
+.stage-label { margin-top: 10px; }
+.home-about .photo-space, .about-greeting-photo { height: clamp(240px, 50svh, 500px); aspect-ratio: auto; }
+.about-feature { padding-block: 14px; }
+.home-about .about-preview-grid { align-items: center; }
+.home-guide { padding-bottom: 24px; }
+.home-faq.section { padding-top: 12px; }
+.home-consultation .consult-photo-grid .photo-space { height: clamp(130px, 23svh, 220px); aspect-ratio: auto; }
+.project-detail { padding-top: 0; }
+.project-detail-intro { padding: 12px 0 24px; }
+.detail-photo-pair .photo-space { height: clamp(220px, 48svh, 480px); }
+.gallery-open .photo-space { height: clamp(210px, 44svh, 420px); aspect-ratio: auto; }
+.project-detail-grid { margin-top: 28px; }
+.detail-tab-content { min-height: 0; }
+.map-space { min-height: clamp(250px, 46svh, 430px); }
+.store-title { padding-bottom: 12px; }
+.store-title h2 { font-size: 27px; }
+.store-details>div { padding-block: 10px; }
+.store-details dd small { margin-top: 3px; }
+.store-map-links { margin-top: 16px; }
+.store-map-links a { padding-block: 10px; min-height: 44px; }
+.visit-notice { margin-top: 24px; padding: 22px 28px; }
+.guide-header { padding: 28px 0 0; }
+.guide-feature { margin-top: 24px; }
+.guide-feature>.photo-space { height: clamp(220px, 38svh, 340px); min-height: 0; }
+.guide-feature>div:last-child { padding: 24px; }
+.guide-feature h2 { margin-top: 12px; }
+.guide-feature p, .guide-feature .text-link { margin-top: 14px; }
+.guide-block { padding-top: 32px; }
+.breadcrumb { padding-block: 14px; }
+.article-header { padding-block: 12px 16px; }
+.article-layout { padding-top: 16px; }
+.article-toc { margin-bottom: 16px; }
+.material-comparison .photo-space { max-height: 180px; }
+.finder-option { min-height: 96px; padding: 18px 22px; }
+.finder-actions { margin-top: 24px; }
+.finder-content { padding: 0; }
+.consult-form { padding: 24px; }
+.form-fields { gap: 18px 20px; }
+.consent-line { margin-block: 14px; }
+.consult-contact-bar { padding-bottom: 20px; margin-bottom: 20px; }
+.consult-form-full { padding: 24px; }
+.consult-form-full .form-fields { gap: 16px 20px; }
+.form-introduction { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px 24px; margin-bottom: 20px; }
+.form-introduction>p { font-size: 15px; }
+.form-introduction>div { flex-direction: row; align-items: baseline; flex-wrap: wrap; padding: 0; margin: 0; background: none; }
+.form-introduction span { font-size: 13px; }
+.consult-form-full .consent-line { margin-block: 14px; }
+.consult-form-full .form-submit { min-height: 50px; }
+
+@media(min-width:1001px) {
+  .consult-form-full .form-fields { grid-template-columns: repeat(6, minmax(0,1fr)); }
+  .consult-form-full .form-fields>.field { grid-column: span 2; }
+  .consult-form-full .field-address { order: 0; }
+  .consult-form-full .form-fields>.material-field { grid-column: 1 / span 2; }
+  .consult-form-full .form-fields>.field-message { grid-column: 3 / span 2; }
+  .consult-form-full .form-fields>.field-photos { grid-column: 5 / span 2; }
+  .consult-form-full .material-options { flex-wrap: wrap; }
+  .finder-options { grid-template-columns: repeat(2, minmax(0,1fr)); }
+  .home-consultation .form-fields { grid-template-columns: repeat(6, minmax(0,1fr)); }
+  .home-consultation .form-fields>.field { grid-column: span 3; }
+  .home-consultation .form-fields>.field-message { grid-column: 1 / span 4; }
+  .home-consultation .form-fields>.field-photos { grid-column: 5 / span 2; }
+}
+
+@media(max-width:700px) {
+  :root { --project-photo-height: clamp(190px, calc(100svh - 430px), 440px); --photo-height: clamp(190px, 36svh, 320px); }
+  .section-heading h2, .home-process .section-heading h2, .home-about .section-heading h2,
+  .home-guide .section-heading h2, .home-consult-copy h2, .project-section-header h2 { font-size: 27px; }
+  .page-intro h1, .guide-header h1, .article-header h1, .project-detail-intro h1 { font-size: 30px; }
+  .home-hero { height: clamp(190px, min(59vw, 100svh - 230px), 300px); }
+  .home-portfolio { padding-block: 24px; }
+  .project-section-header { gap: 12px; margin-bottom: 16px; }
+  .project-section-actions { gap: 14px; }
+  .project-thumbnails button { width: 52px; height: 52px; }
+  .project-card-copy h3 { font-size: 18px; }
+  .project-card-copy p { font-size: 14px; }
+  .page-intro { padding-block: 24px; }
+  .home-about .photo-space, .about-greeting-photo { height: clamp(220px, 40svh, 360px); }
+  .detail-photo-pair .photo-space { height: clamp(190px, 36svh, 300px); }
+  .gallery-open .photo-space { height: clamp(190px, 32svh, 280px); }
+  .guide-feature>.photo-space { height: clamp(200px, 32svh, 270px); }
+  .consult-form, .consult-form-full { padding: 22px 18px; }
+  .finder-content { padding: 0; }
+  .finder-option { padding: 15px; min-height: 88px; }
+  .visit-notice { padding: 22px; }
+}
+
 @media(prefers-reduced-motion:reduce) { .gallery-open img { transition: none; }.gallery-open:hover img { transform: none; } }
 @media(prefers-reduced-motion:reduce) { html { scroll-behavior: auto; } *,*::before,*::after { animation-duration: .01ms !important; transition-duration: .01ms !important; animation-iteration-count: 1 !important; } }

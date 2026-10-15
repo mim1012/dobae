@@ -14,18 +14,19 @@ type RevealProps = {
   as?: keyof typeof revealElements;
   className?: string;
   delay?: number;
+  lift?: number;
   id?: string;
   href?: string;
   'aria-label'?: string;
   'aria-labelledby'?: string;
 };
-export function Reveal({ children, as = 'div', className = '', delay = 0, ...props }: RevealProps) {
+export function Reveal({ children, as = 'div', className = '', delay = 0, lift = 26, ...props }: RevealProps) {
   const reduced = useReducedMotion();
   const [entered, setEntered] = useState(false);
   const [focused, setFocused] = useState(false);
   const Element = revealElements[as];
   const visible = reduced || entered || focused;
-  return <Element {...props} className={className} data-reveal="" initial={reduced ? false : { opacity: 0, y: 26 }} animate={visible ? { opacity: 1, y: 0 } : { opacity: 0, y: 26 }} onViewportEnter={() => setEntered(true)} viewport={{ once: true, amount: 0.08 }} onFocusCapture={() => setFocused(true)} transition={{ duration: reduced || focused ? 0 : .65, delay: reduced || focused ? 0 : delay, ease: [.22, 1, .36, 1] }}>{children}</Element>;
+  return <Element {...props} className={className} data-reveal="" initial={reduced ? false : { opacity: 0, y: lift }} animate={visible ? { opacity: 1, y: 0 } : { opacity: 0, y: lift }} onViewportEnter={() => setEntered(true)} viewport={{ once: true, amount: 0.08 }} onFocusCapture={() => setFocused(true)} transition={{ duration: reduced || focused ? 0 : .65, delay: reduced || focused ? 0 : delay, ease: [.22, 1, .36, 1] }}>{children}</Element>;
 }
 export function Photo({ src, label, className = '', eager = false }: { src: string; label: string; className?: string; eager?: boolean }) {
   return <div className={cn('photo-space', className)}><img src={src} alt={label} loading={eager ? 'eager' : 'lazy'} decoding="async" fetchPriority={eager ? 'high' : undefined} /></div>;
