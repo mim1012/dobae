@@ -1,16 +1,32 @@
 import { useState, type ReactNode, type KeyboardEventHandler } from 'react';
 import { motion, useReducedMotion, useScroll, useSpring, useMotionValueEvent } from 'motion/react';
 import * as Dialog from '@radix-ui/react-dialog';
-import { ArrowRight, ArrowUpRight, ArrowUp, ChevronRight, MessageCircle, Layers, ClipboardCheck, CalendarDays, House, Menu, X, Plus, Phone } from 'lucide-react';
+import { ArrowRight, ArrowUpRight, ArrowUp, ChevronRight, Layers, Menu, X, Plus, Phone } from 'lucide-react';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { business, navigation, steps, faqs } from './data';
 
 export const cn = (...values: ClassValue[]) => twMerge(clsx(values));
 export function Arrow({ diagonal = false }: { diagonal?: boolean }) { return diagonal ? <ArrowUpRight aria-hidden="true" size={21} /> : <ArrowRight aria-hidden="true" size={21} />; }
-export function Reveal({ children, className = '', delay = 0 }: { children: ReactNode; className?: string; delay?: number }) {
+const revealElements = { div: motion.div, section: motion.section, article: motion.article, header: motion.header, li: motion.li, figure: motion.figure, a: motion.a };
+type RevealProps = {
+  children: ReactNode;
+  as?: keyof typeof revealElements;
+  className?: string;
+  delay?: number;
+  lift?: number;
+  id?: string;
+  href?: string;
+  'aria-label'?: string;
+  'aria-labelledby'?: string;
+};
+export function Reveal({ children, as = 'div', className = '', delay = 0, lift = 26, ...props }: RevealProps) {
   const reduced = useReducedMotion();
-  return <motion.div className={className} initial={reduced ? false : { opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.04 }} transition={{ duration: .2, delay, ease: 'easeOut' }}>{children}</motion.div>;
+  const [entered, setEntered] = useState(false);
+  const [focused, setFocused] = useState(false);
+  const Element = revealElements[as];
+  const visible = reduced || entered || focused;
+  return <Element {...props} className={className} data-reveal="" initial={reduced ? false : { opacity: 0, y: lift }} animate={visible ? { opacity: 1, y: 0 } : { opacity: 0, y: lift }} onViewportEnter={() => setEntered(true)} viewport={{ once: true, amount: 0.08 }} onFocusCapture={() => setFocused(true)} transition={{ duration: reduced || focused ? 0 : .65, delay: reduced || focused ? 0 : delay, ease: [.22, 1, .36, 1] }}>{children}</Element>;
 }
 export function Photo({ src, label, className = '', eager = false }: { src: string; label: string; className?: string; eager?: boolean }) {
   return <div className={cn('photo-space', className)}><img src={src} alt={label} loading={eager ? 'eager' : 'lazy'} decoding="async" fetchPriority={eager ? 'high' : undefined} /></div>;
@@ -33,9 +49,9 @@ export function SiteLayout({ children }: { children: ReactNode }) {
     <a className="skip-link" href="#main">본문 바로가기</a>
     <header className="site-header"><div className="container header-inner"><a className="brand" href="/" aria-label="우리도배 홈">우리도배</a><nav className="desktop-nav" aria-label="주 메뉴">{navigation.map(item => <a key={item.href} href={item.href} aria-current={path.startsWith(item.href) ? 'page' : undefined}>{item.label}</a>)}</nav><div className="header-actions"><a className="header-finder" href="/finder">벽지 찾기</a><a className="button button-primary header-cta" href="/consult">견적 상담</a><button className="icon-button menu-toggle" aria-label="메뉴 열기" onClick={() => setMenu(true)}><Menu /></button></div></div><motion.div className="scroll-progress" style={{ scaleX: reduced ? scrollYProgress : progress }} /></header>
     <main id="main">{children}</main>
-    <footer className="site-footer"><div className="container"><div className="footer-main"><a href="/" className="brand">우리도배</a><nav aria-label="하단 메뉴">{navigation.map(item => <a key={item.href} href={item.href}>{item.label}</a>)}<a href="/privacy">개인정보 처리방침</a></nav><a className="text-link" href={business.blog} target="_blank" rel="noopener noreferrer">네이버 블로그 <Arrow diagonal /></a></div><div className="footer-business"><div><p>우리 집에 맞는 벽지와 시공을 함께 고민합니다.</p><p>{business.address}<span className="footer-divider">|</span>문의 <a href={business.telephone}>{business.phone}</a></p></div><span>© {new Date().getFullYear()} 우리도배. All rights reserved.</span></div></div></footer>
+    <footer className="site-footer"><div className="container"><div className="footer-main"><a href="/" className="brand">우리도배</a><nav aria-label="하단 메뉴">{navigation.map(item => <a key={item.href} href={item.href}>{item.label}</a>)}<a href="/privacy">개인정보 처리방침</a></nav><a className="text-link" href={business.blog} target="_blank" rel="noopener noreferrer">네이버 블로그 <Arrow diagonal /></a></div><div className="footer-business"><div><p>우리도배 · 도배 시공 상담</p><p>{business.address}<span className="footer-divider">|</span>문의 <a href={business.telephone}>{business.phone}</a></p></div><span>© {new Date().getFullYear()} 우리도배. All rights reserved.</span></div></div></footer>
     <div className="floating-actions"><a href={business.telephone} aria-label="우리도배 전화 상담" className="floating-call"><Phone size={20} /><span>전화 상담</span></a>{showTop && <motion.button initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="back-top" aria-label="맨 위로 이동" onClick={() => window.scrollTo({ top: 0, behavior: reduced ? 'instant' : 'smooth' })}><ArrowUp size={20} /></motion.button>}</div>
-    <Modal open={menu} onOpenChange={setMenu} title="우리도배" description="시공부터 상담까지, 필요한 정보를 찾아보세요."><nav className="mobile-nav" aria-label="모바일 메뉴">{navigation.map(item => <a href={item.href} key={item.href}>{item.label}<ChevronRight size={20} /></a>)}<Action href="/finder" outline>우리 집 벽지 찾기</Action></nav></Modal>
+    <Modal open={menu} onOpenChange={setMenu} title="우리도배" description="시공사례 · 도배 가이드 · 상담"><nav className="mobile-nav" aria-label="모바일 메뉴">{navigation.map(item => <a href={item.href} key={item.href}>{item.label}<ChevronRight size={20} /></a>)}<Action href="/finder" outline>우리 집 벽지 찾기</Action></nav></Modal>
   </>;
 }
 export function SectionHeading({ eyebrow, title, description, centered = false }: { eyebrow?: string; title: ReactNode; description?: ReactNode; centered?: boolean }) {
@@ -47,15 +63,17 @@ export function PageIntro({ eyebrow, title, description }: { eyebrow: string; ti
 export function Breadcrumb({ items }: { items: { href?: string; label: string }[] }) {
   return <nav className="breadcrumb" aria-label="현재 위치"><a href="/">홈</a>{items.map((item, index) => <span key={index}><ChevronRight size={13} />{item.href ? <a href={item.href}>{item.label}</a> : <span aria-current="page">{item.label}</span>}</span>)}</nav>;
 }
-export function ProcessSteps() {
-  const icons = [MessageCircle, ClipboardCheck, Layers, CalendarDays, House];
-  return <div className="process-steps">{steps.map((step, index) => { const Icon = icons[index]; return <Reveal className="process-step" key={step.title} delay={index * .025}><div className="step-number"><span>{index + 1}</span></div><div className="step-icon"><Icon size={33} strokeWidth={1.6} /></div><h3>{step.title}</h3><p>{step.text}</p></Reveal>; })}</div>;
+export function ProcessSteps({ compact = false }: { compact?: boolean }) {
+  return <ol className={cn('process-steps', compact && 'process-compact')}>{steps.map((step, index) => {
+    const content = <><span className="step-index">{String(index + 1).padStart(2, '0')}</span><div><h3>{step.title}</h3>{!compact && <p>{step.text}</p>}</div>{compact && index < steps.length - 1 && <ChevronRight className="step-next" size={20} aria-hidden="true" />}</>;
+    return compact ? <Reveal as="li" className="process-step" key={step.title} delay={index * .07}>{content}</Reveal> : <li className="process-step" key={step.title}>{content}</li>;
+  })}</ol>;
 }
 export function FAQ({ full = false }: { full?: boolean }) {
-  const [opened, setOpened] = useState<number | null>(0);
+  const [opened, setOpened] = useState<number | null>(null);
   return <div className="faq-list">{faqs.slice(0, full ? faqs.length : 4).map((item, index) => <div key={item.question} className={cn('faq-item', opened === index && 'opened')}><h3><button aria-expanded={opened === index} aria-controls={`faq-${index}`} onClick={() => setOpened(opened === index ? null : index)}><span>{item.question}</span><Plus size={22} /></button></h3><div id={`faq-${index}`} hidden={opened !== index}><p>{item.answer}</p></div></div>)}</div>;
 }
-export function ConsultationBanner({ title = '우리 집은 어떻게 달라질까요?', text = '원하는 공간과 분위기부터 편하게 이야기해 주세요.' }: { title?: string; text?: string }) {
+export function ConsultationBanner({ title = '견적 상담', text = '시공할 지역과 평형, 희망일을 알려주세요.' }: { title?: string; text?: string }) {
   return <section className="consult-banner"><div className="container"><Reveal className="consult-banner-inner"><div><h2>{title}</h2><p>{text}</p></div><div className="button-group"><Action href="/consult">견적 상담 신청</Action><Action href="/finder" outline>벽지 찾기</Action></div></Reveal></div></section>;
 }
 export function EmptyState({ title, description, onReset }: { title: string; description: string; onReset: () => void }) {
